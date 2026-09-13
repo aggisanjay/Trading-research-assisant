@@ -339,25 +339,29 @@ export default function Home() {
             <div className="lg:col-span-8 xl:col-span-9 space-y-8">
               {/* STAGE 02: CLARIFY */}
               {stage === 'clarify' && parsedQuestion && (
-                <ClarificationPanel
-                  parsedQuestion={parsedQuestion}
-                  currentChoices={clarifications}
-                  onConfirm={handleConfirmClarifications}
-                  onBackToAsk={() => setStage('ask')}
-                />
+                <div key="clarify" className="animate-fadeIn">
+                  <ClarificationPanel
+                    parsedQuestion={parsedQuestion}
+                    currentChoices={clarifications}
+                    onConfirm={handleConfirmClarifications}
+                    onBackToAsk={() => setStage('ask')}
+                  />
+                </div>
               )}
 
               {/* STAGE 03: DEFINE */}
               {stage === 'define' && experiment && parsedQuestion && (
-                <ExperimentDefinition
-                  experiment={experiment}
-                  parsedQuestion={parsedQuestion}
-                  clarifications={clarifications}
-                  onRunExperiment={handleStartBacktest}
-                  onEditAssumptions={() => setStage('clarify')}
-                  onBackToClarify={() => setStage('clarify')}
-                  isLoading={isTesting}
-                />
+                <div key="define" className="animate-fadeIn">
+                  <ExperimentDefinition
+                    experiment={experiment}
+                    parsedQuestion={parsedQuestion}
+                    clarifications={clarifications}
+                    onRunExperiment={handleStartBacktest}
+                    onEditAssumptions={() => setStage('clarify')}
+                    onBackToClarify={() => setStage('clarify')}
+                    isLoading={isTesting}
+                  />
+                </div>
               )}
 
               {/* STAGE 04: TEST */}
@@ -367,25 +371,35 @@ export default function Home() {
 
               {/* STAGE 05: LEARN */}
               {stage === 'learn' && results && experiment && (
-                <div className="space-y-8 animate-fadeIn">
+                <div className="space-y-8">
                   {/* Top Empirical Results Cards */}
-                  <ResultsSummary results={results} experiment={experiment} />
+                  <div className="animate-slideUp" style={{ animationDelay: '0ms' }}>
+                    <ResultsSummary results={results} experiment={experiment} />
+                  </div>
 
                   {/* 4 Professional Quantitative Recharts */}
-                  <ChartsView results={results} experiment={experiment} />
+                  <div className="animate-slideUp" style={{ animationDelay: '80ms' }}>
+                    <ChartsView results={results} experiment={experiment} />
+                  </div>
 
                   {/* Separated Learnings: Data vs Interpretation vs Prudent Conclusion */}
-                  <LearnSection results={results} experiment={experiment} />
+                  <div className="animate-slideUp" style={{ animationDelay: '160ms' }}>
+                    <LearnSection results={results} experiment={experiment} />
+                  </div>
 
                   {/* Institutional Research Caveats */}
-                  <ResearchWarnings />
+                  <div className="animate-slideUp" style={{ animationDelay: '240ms' }}>
+                    <ResearchWarnings />
+                  </div>
 
                   {/* Actionable Follow-up Hypotheses */}
-                  <NextQuestions
-                    experiment={experiment}
-                    results={results}
-                    onSelectQuestion={handleSelectNextQuestion}
-                  />
+                  <div className="animate-slideUp" style={{ animationDelay: '320ms' }}>
+                    <NextQuestions
+                      experiment={experiment}
+                      results={results}
+                      onSelectQuestion={handleSelectNextQuestion}
+                    />
+                  </div>
                 </div>
               )}
             </div>
