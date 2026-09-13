@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils';
 
 interface WorkflowStepperProps {
   currentStage: ResearchStage;
-  onSelectStage?: (stage: ResearchStage) => void;
   stagesCompleted: Record<ResearchStage, boolean>;
 }
 
@@ -21,7 +20,6 @@ const STAGES: { id: ResearchStage; num: string; label: string; desc: string }[] 
 
 export function WorkflowStepper({
   currentStage,
-  onSelectStage,
   stagesCompleted,
 }: WorkflowStepperProps) {
   const stageOrder: ResearchStage[] = ['ask', 'clarify', 'define', 'test', 'learn'];
@@ -35,39 +33,36 @@ export function WorkflowStepper({
             {STAGES.map((stage, idx) => {
               const isCurrent = stage.id === currentStage;
               const isPast = idx < currentIndex || stagesCompleted[stage.id];
-              const isClickable = isPast && onSelectStage;
 
               return (
                 <li key={stage.id} className="flex items-center gap-2 sm:gap-4">
-                  <button
-                    disabled={!isClickable}
-                    onClick={() => isClickable && onSelectStage(stage.id)}
+                  <div
                     className={cn(
-                      'flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-colors select-none text-left',
+                      'flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs select-none text-left cursor-default transition-colors',
                       isCurrent && 'bg-zinc-800 text-white font-semibold border border-zinc-700 shadow-sm',
-                      isPast && !isCurrent && 'text-zinc-300 hover:text-white hover:bg-zinc-800/60 cursor-pointer',
-                      !isPast && !isCurrent && 'text-zinc-600 cursor-not-allowed'
+                      isPast && !isCurrent && 'text-zinc-300',
+                      !isPast && !isCurrent && 'text-zinc-600'
                     )}
                   >
                     <span
                       className={cn(
                         'w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold border transition-colors',
                         isCurrent && 'border-emerald-500 bg-emerald-500/20 text-emerald-400',
-                        isPast && !isCurrent && 'border-zinc-700 bg-zinc-800 text-zinc-300',
+                        isPast && !isCurrent && 'border-emerald-700/60 bg-emerald-950/60 text-emerald-400',
                         !isPast && !isCurrent && 'border-zinc-800 bg-zinc-900 text-zinc-600'
                       )}
                     >
                       {isPast && !isCurrent ? <Check className="w-3 h-3 text-emerald-400 stroke-[3]" /> : stage.num}
                     </span>
                     <div>
-                      <div className={cn('text-xs', isCurrent ? 'text-white' : isPast ? 'text-zinc-300' : 'text-zinc-500')}>
+                      <div className={cn('text-xs font-medium', isCurrent ? 'text-white font-semibold' : isPast ? 'text-zinc-300' : 'text-zinc-500')}>
                         {stage.label}
                       </div>
                       <div className="text-[10px] text-zinc-500 hidden md:block">
                         {stage.desc}
                       </div>
                     </div>
-                  </button>
+                  </div>
 
                   {idx < STAGES.length - 1 && (
                     <ChevronRight className="w-4 h-4 text-zinc-700 mx-1 shrink-0" />
