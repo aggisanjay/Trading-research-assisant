@@ -299,11 +299,6 @@ export default function Home() {
       <WorkflowStepper
         currentStage={stage}
         stagesCompleted={stagesCompleted}
-        onSelectStage={(targetStage) => {
-          if (stagesCompleted[targetStage]) {
-            setStage(targetStage);
-          }
-        }}
       />
 
       {/* Main Workspace Layout */}
