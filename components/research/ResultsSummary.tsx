@@ -2,16 +2,7 @@
 
 import React from 'react';
 import { BacktestResult, Experiment } from '@/lib/types/research';
-import {
-  TrendingUp,
-  Percent,
-  Compass,
-  AlertTriangle,
-  ArrowUpRight,
-  ArrowDownRight,
-  Layers,
-  Activity,
-} from 'lucide-react';
+import { AlertTriangle, TrendingUp, Percent, Compass, Layers, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ResultsSummaryProps {
@@ -24,151 +15,117 @@ export function ResultsSummary({ results, experiment }: ResultsSummaryProps) {
   const formatPct = (val: number) => (val >= 0 ? `+${val.toFixed(2)}%` : `${val.toFixed(2)}%`);
 
   return (
-    <div className="space-y-5">
-      {/* Mandatory Demo Data Banner */}
-      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs font-mono flex items-start gap-3 shadow-lg">
+    <div className="space-y-4">
+      {/* Demo Data Disclaimer */}
+      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-200 flex items-start gap-3">
         <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-        <div className="space-y-1">
-          <span className="font-bold tracking-widest text-amber-300 uppercase block text-[11px]">
-            DEMO DATA // SCIENTIFIC RESEARCH DISCLAIMER
+        <div className="space-y-0.5">
+          <span className="font-bold text-amber-300 uppercase tracking-wide text-xs block">
+            DEMO DATA
           </span>
-          <p className="text-amber-200/90 text-xs font-sans leading-relaxed">
-            This prototype operates on simulated market data generated via seeded pseudo-random
-            processes. Results are illustrative for testing the research framework and must not be
-            treated as real historical exchange evidence or financial advice.
+          <p className="text-amber-200/90 leading-relaxed font-sans text-xs">
+            This prototype uses simulated market data. Results are illustrative and should not be treated as investment evidence.
           </p>
         </div>
       </div>
 
-      {/* Primary Key Performance Metrics Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-        {/* Signals */}
-        <div className="p-4 rounded-xl card-terminal space-y-1.5">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span className="text-[10px] uppercase font-bold tracking-wider">SIGNALS</span>
-            <Layers className="w-3.5 h-3.5 text-slate-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight">
-            {results.qualifyingSignals}
-          </div>
-          <div className="text-[11px] text-slate-400 font-sans">
-            out of {results.totalObservations} sessions
-          </div>
+      {/* Main Results Card */}
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-zinc-850 px-5 py-3 border-b border-zinc-800 flex items-center justify-between">
+          <span className="text-xs font-bold text-white font-mono uppercase tracking-wider">
+            Experiment Result
+          </span>
+          <span className="text-xs font-mono text-zinc-400">
+            {results.totalObservations} trading days evaluated
+          </span>
         </div>
 
-        {/* Win Rate */}
-        <div className="p-4 rounded-xl card-terminal space-y-1.5">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span className="text-[10px] uppercase font-bold tracking-wider">WIN RATE</span>
-            <Percent className="w-3.5 h-3.5 text-slate-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400 tracking-tight">
-            {results.winRate.toFixed(1)}%
-          </div>
-          <div className="text-[11px] text-slate-400 font-sans">
-            {results.winningTradesCount} wins / {results.losingTradesCount} losses
-          </div>
-        </div>
-
-        {/* Average Return */}
-        <div className="p-4 rounded-xl card-terminal space-y-1.5">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span className="text-[10px] uppercase font-bold tracking-wider">AVG RETURN</span>
-            <TrendingUp className="w-3.5 h-3.5 text-slate-400" />
-          </div>
-          <div
-            className={cn(
-              'text-2xl sm:text-3xl font-extrabold font-mono tracking-tight',
-              results.avgStrategyReturn >= 0 ? 'text-emerald-400' : 'text-rose-400'
-            )}
-          >
-            {formatPct(results.avgStrategyReturn)}
-          </div>
-          <div className="text-[11px] text-slate-400 font-sans">
-            per {experiment.holdingPeriodDays}-day hold
-          </div>
-        </div>
-
-        {/* Baseline Return */}
-        <div className="p-4 rounded-xl card-terminal space-y-1.5">
-          <div className="flex items-center justify-between text-slate-400 text-xs font-mono">
-            <span className="text-[10px] uppercase font-bold tracking-wider">BASELINE RETURN</span>
-            <Compass className="w-3.5 h-3.5 text-slate-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-extrabold font-mono text-slate-300 tracking-tight">
-            {formatPct(results.unconditionalBaselineReturn)}
-          </div>
-          <div className="text-[11px] text-slate-400 font-sans">unconditional market drift</div>
-        </div>
-
-        {/* Estimated Edge */}
-        <div
-          className={cn(
-            'p-4 rounded-xl border space-y-1.5 col-span-2 sm:col-span-1 shadow-xl',
-            isPositiveEdge
-              ? 'bg-emerald-950/30 border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.18)]'
-              : 'bg-rose-950/30 border-rose-500/50'
-          )}
-        >
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className={isPositiveEdge ? 'text-emerald-300 font-bold text-[10px] tracking-wider' : 'text-rose-300 font-bold text-[10px] tracking-wider'}>
-              ESTIMATED EDGE
-            </span>
-            {isPositiveEdge ? (
-              <ArrowUpRight className="w-4 h-4 text-emerald-400" />
-            ) : (
-              <ArrowDownRight className="w-4 h-4 text-rose-400" />
-            )}
-          </div>
-          <div
-            className={cn(
-              'text-2xl sm:text-3xl font-extrabold font-mono tracking-tight',
-              isPositiveEdge ? 'text-emerald-400' : 'text-rose-400'
-            )}
-          >
-            {formatPct(results.estimatedEdge)}
-          </div>
-          <div className="text-[11px] text-slate-300 font-sans font-medium">
-            Strategy vs Unconditional
-          </div>
-        </div>
-      </div>
-
-      {/* Secondary Terminal Metric Table */}
-      <div className="card-terminal rounded-xl overflow-hidden text-xs font-mono shadow-xl">
-        <div className="bg-slate-900/90 px-4 py-3 border-b border-white/[0.08] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Activity className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-slate-200 font-bold uppercase tracking-wider text-[11px]">
-              Detailed Statistical Diagnostics
-            </span>
-          </div>
-          <span className="text-slate-400 text-[10px] font-mono">NIFTY 50 SIMULATOR</span>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-white/[0.08] p-3.5">
-          <div className="p-2.5 space-y-1">
-            <span className="text-slate-400 uppercase text-[10px] tracking-wider">Median Trade Return</span>
-            <div className="text-slate-100 font-bold text-sm">
-              {formatPct(results.medianStrategyReturn)}
+        {/* 5 Core Metrics */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-zinc-800 p-2">
+          {/* Signals */}
+          <div className="p-4 space-y-1">
+            <div className="flex items-center justify-between text-zinc-400 text-xs">
+              <span className="font-mono text-[10px] uppercase font-semibold">Signals</span>
+              <Layers className="w-3.5 h-3.5" />
             </div>
-          </div>
-          <div className="p-2.5 space-y-1">
-            <span className="text-slate-400 uppercase text-[10px] tracking-wider">Profit Factor</span>
-            <div className="text-slate-100 font-bold text-sm font-mono">
-              {results.profitFactor.toFixed(2)}
+            <div className="text-2xl sm:text-3xl font-bold font-mono text-white">
+              {results.qualifyingSignals}
             </div>
+            <div className="text-[11px] text-zinc-500">qualifying entries</div>
           </div>
-          <div className="p-2.5 space-y-1">
-            <span className="text-slate-400 uppercase text-[10px] tracking-wider">Maximum Drawdown</span>
-            <div className="text-rose-400 font-bold text-sm font-mono">
-              -{results.maxDrawdown.toFixed(1)}%
+
+          {/* Win Rate */}
+          <div className="p-4 space-y-1">
+            <div className="flex items-center justify-between text-zinc-400 text-xs">
+              <span className="font-mono text-[10px] uppercase font-semibold">Win Rate</span>
+              <Percent className="w-3.5 h-3.5" />
             </div>
+            <div className="text-2xl sm:text-3xl font-bold font-mono text-white">
+              {results.winRate.toFixed(1)}%
+            </div>
+            <div className="text-[11px] text-zinc-500">{results.winningTradesCount}W / {results.losingTradesCount}L</div>
           </div>
-          <div className="p-2.5 space-y-1">
-            <span className="text-slate-400 uppercase text-[10px] tracking-wider">Strategy Cumulative</span>
-            <div className="text-emerald-400 font-bold text-sm font-mono">
-              {formatPct(results.strategyCumulativeReturn)}
+
+          {/* Avg Return */}
+          <div className="p-4 space-y-1">
+            <div className="flex items-center justify-between text-zinc-400 text-xs">
+              <span className="font-mono text-[10px] uppercase font-semibold">Avg Return</span>
+              <TrendingUp className="w-3.5 h-3.5" />
             </div>
+            <div className={cn('text-2xl sm:text-3xl font-bold font-mono', results.avgStrategyReturn >= 0 ? 'text-emerald-400' : 'text-rose-400')}>
+              {formatPct(results.avgStrategyReturn)}
+            </div>
+            <div className="text-[11px] text-zinc-500">per {experiment.holdingPeriodDays}d trade</div>
+          </div>
+
+          {/* Baseline Return */}
+          <div className="p-4 space-y-1">
+            <div className="flex items-center justify-between text-zinc-400 text-xs">
+              <span className="font-mono text-[10px] uppercase font-semibold">Baseline Return</span>
+              <Compass className="w-3.5 h-3.5" />
+            </div>
+            <div className="text-2xl sm:text-3xl font-bold font-mono text-zinc-300">
+              {formatPct(results.unconditionalBaselineReturn)}
+            </div>
+            <div className="text-[11px] text-zinc-500">unconditional drift</div>
+          </div>
+
+          {/* Estimated Edge */}
+          <div className={cn('p-4 space-y-1 col-span-2 sm:col-span-1 rounded-lg', isPositiveEdge ? 'bg-emerald-950/20' : 'bg-rose-950/20')}>
+            <div className="flex items-center justify-between text-xs">
+              <span className={cn('font-mono text-[10px] uppercase font-bold', isPositiveEdge ? 'text-emerald-400' : 'text-rose-400')}>
+                Estimated Edge
+              </span>
+              {isPositiveEdge ? (
+                <ArrowUpRight className="w-4 h-4 text-emerald-400" />
+              ) : (
+                <ArrowDownRight className="w-4 h-4 text-rose-400" />
+              )}
+            </div>
+            <div className={cn('text-2xl sm:text-3xl font-bold font-mono', isPositiveEdge ? 'text-emerald-400' : 'text-rose-400')}>
+              {formatPct(results.estimatedEdge)}
+            </div>
+            <div className="text-[11px] text-zinc-400">excess return</div>
+          </div>
+        </div>
+
+        {/* Secondary Diagnostics Table */}
+        <div className="bg-zinc-950/80 px-5 py-3 border-t border-zinc-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
+          <div>
+            <span className="text-zinc-500 text-[10px] uppercase block">Median Return</span>
+            <span className="text-zinc-200 font-semibold">{formatPct(results.medianStrategyReturn)}</span>
+          </div>
+          <div>
+            <span className="text-zinc-500 text-[10px] uppercase block">Max Drawdown</span>
+            <span className="text-rose-400 font-semibold">-{results.maxDrawdown.toFixed(1)}%</span>
+          </div>
+          <div>
+            <span className="text-zinc-500 text-[10px] uppercase block">Profit Factor</span>
+            <span className="text-zinc-200 font-semibold">{results.profitFactor.toFixed(2)}</span>
+          </div>
+          <div>
+            <span className="text-zinc-500 text-[10px] uppercase block">Cumulative Return</span>
+            <span className="text-emerald-400 font-semibold">{formatPct(results.strategyCumulativeReturn)}</span>
           </div>
         </div>
       </div>

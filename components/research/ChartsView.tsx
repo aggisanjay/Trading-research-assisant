@@ -15,7 +15,6 @@ import {
   Cell,
 } from 'recharts';
 import { BacktestResult, Experiment } from '@/lib/types/research';
-import { LineChart as ChartIcon, BarChart3, TrendingUp, Layers } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ChartsViewProps {
@@ -33,17 +32,15 @@ export function ChartsView({ results, experiment }: ChartsViewProps) {
 
   if (!isMounted) {
     return (
-      <div className="h-80 w-full card-terminal rounded-2xl flex items-center justify-center text-slate-500 font-mono text-xs">
-        Loading visualizations...
+      <div className="h-72 w-full bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center text-zinc-500 text-xs font-mono">
+        Loading charts...
       </div>
     );
   }
 
-  // Downsample equity points if array is large for smooth rendering
   const step = Math.max(1, Math.floor(results.equityCurve.length / 150));
   const sampledEquity = results.equityCurve.filter((_, idx) => idx % step === 0);
 
-  // Trade signals data
   const tradesData = results.trades.slice(0, 80).map((t, idx) => ({
     name: `#${idx + 1}`,
     date: t.entryDate,
@@ -52,35 +49,32 @@ export function ChartsView({ results, experiment }: ChartsViewProps) {
   }));
 
   return (
-    <div className="card-terminal rounded-2xl overflow-hidden shadow-2xl">
-      {/* Chart Selector Tabs Header */}
-      <div className="bg-slate-900/90 px-5 py-3.5 border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <ChartIcon className="w-4 h-4 text-emerald-400" />
-          <span className="text-xs font-bold font-mono uppercase tracking-wider text-slate-200">
-            Quantitative Visualizations
-          </span>
-        </div>
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden shadow-sm">
+      {/* Chart Selector Tabs */}
+      <div className="bg-zinc-850 px-5 py-3 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+        <span className="text-xs font-bold text-white font-mono uppercase tracking-wider">
+          Visualizations
+        </span>
 
-        <div className="flex items-center gap-1.5 font-mono text-xs p-1 bg-slate-950/80 rounded-lg border border-white/[0.06]">
+        <div className="flex items-center gap-1.5 text-xs font-mono">
           <button
             onClick={() => setActiveTab('equity')}
             className={cn(
-              'px-3 py-1.5 rounded-md transition-all font-medium text-xs',
+              'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer',
               activeTab === 'equity'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm font-semibold'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-zinc-800 text-white font-semibold border border-zinc-700 shadow-sm'
+                : 'text-zinc-400 hover:text-white'
             )}
           >
-            Cumulative Equity
+            Cumulative Strategy vs Baseline
           </button>
           <button
             onClick={() => setActiveTab('distribution')}
             className={cn(
-              'px-3 py-1.5 rounded-md transition-all font-medium text-xs',
+              'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer',
               activeTab === 'distribution'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm font-semibold'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-zinc-800 text-white font-semibold border border-zinc-700 shadow-sm'
+                : 'text-zinc-400 hover:text-white'
             )}
           >
             Return Distribution
@@ -88,202 +82,163 @@ export function ChartsView({ results, experiment }: ChartsViewProps) {
           <button
             onClick={() => setActiveTab('signals')}
             className={cn(
-              'px-3 py-1.5 rounded-md transition-all font-medium text-xs',
+              'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer',
               activeTab === 'signals'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm font-semibold'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-zinc-800 text-white font-semibold border border-zinc-700 shadow-sm'
+                : 'text-zinc-400 hover:text-white'
             )}
           >
-            Trade Outcomes
+            Signal Performance
           </button>
           <button
             onClick={() => setActiveTab('price')}
             className={cn(
-              'px-3 py-1.5 rounded-md transition-all font-medium text-xs',
+              'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer',
               activeTab === 'price'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm font-semibold'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-zinc-800 text-white font-semibold border border-zinc-700 shadow-sm'
+                : 'text-zinc-400 hover:text-white'
             )}
           >
-            NIFTY Price
+            Market Price
           </button>
         </div>
       </div>
 
       {/* Chart Canvas Area */}
-      <div className="p-5 sm:p-7">
+      <div className="p-5 sm:p-6">
         {/* CHART 1: Cumulative Strategy vs Baseline */}
         {activeTab === 'equity' && (
-          <div className="space-y-3.5">
-            <div className="flex items-center justify-between text-xs font-mono">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
               <div className="space-x-5">
-                <span className="inline-flex items-center gap-2 text-emerald-400 font-bold">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
-                  Strategy Cumulative (Indexed 100)
+                <span className="text-emerald-400 font-bold inline-flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+                  Strategy Cumulative
                 </span>
-                <span className="inline-flex items-center gap-2 text-slate-400 font-medium">
-                  <span className="w-2.5 h-2.5 rounded-full bg-slate-500 inline-block"></span>
+                <span className="text-zinc-400 inline-flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-zinc-500"></span>
                   Baseline Buy &amp; Hold
                 </span>
               </div>
-              <span className="text-slate-500 text-[11px] hidden sm:inline font-mono">
-                5-Year Simulated Performance
-              </span>
+              <span className="text-zinc-500 text-[11px]">Indexed to 100</span>
             </div>
 
-            <div className="h-72 w-full pt-2">
+            <div className="h-72 w-full pt-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={sampledEquity} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                  <XAxis dataKey="date" stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
-                  <YAxis stroke="#64748b" domain={['auto', 'auto']} tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                  <XAxis dataKey="date" stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
+                  <YAxis stroke="#71717a" domain={['auto', 'auto']} tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#07090f', borderColor: 'rgba(255,255,255,0.12)', fontSize: '12px', fontFamily: 'monospace', borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}
+                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46', fontSize: '11px', fontFamily: 'monospace', borderRadius: '8px' }}
                     formatter={(value: any, name: string) => [
                       `${Number(value).toFixed(2)} pts`,
                       name === 'strategyEquity' ? 'Strategy' : 'Baseline',
                     ]}
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="strategyEquity"
-                    stroke="#10b981"
-                    strokeWidth={2.2}
-                    dot={false}
-                    name="strategyEquity"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="baselineEquity"
-                    stroke="#64748b"
-                    strokeWidth={1.5}
-                    strokeDasharray="4 4"
-                    dot={false}
-                    name="baselineEquity"
-                  />
+                  <Line type="monotone" dataKey="strategyEquity" stroke="#10b981" strokeWidth={2} dot={false} name="strategyEquity" />
+                  <Line type="monotone" dataKey="baselineEquity" stroke="#a1a1aa" strokeWidth={1.5} strokeDasharray="4 4" dot={false} name="baselineEquity" />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-[11px] text-slate-400 font-sans italic pt-1">
-              Chart 1: Cumulative growth of 100 invested in the strategy during qualifying entry holding periods vs passive buy-and-hold baseline.
+            <p className="text-xs text-zinc-400">
+              Chart 1: Cumulative return of the strategy when active in trades vs passive buy-and-hold baseline.
             </p>
           </div>
         )}
 
-        {/* CHART 2: Return Distribution Histogram */}
+        {/* CHART 2: Return Distribution */}
         {activeTab === 'distribution' && (
-          <div className="space-y-3.5">
-            <div className="flex items-center justify-between text-xs font-mono">
-              <span className="text-slate-200 font-bold">
-                Frequency of Trade Returns Following Entry Signals
-              </span>
-              <span className="text-slate-500 text-[11px] font-mono">Binned Event Study</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
+              <span className="text-white font-medium">Next-Day Return Distribution</span>
+              <span className="text-zinc-500 text-[11px]">Binned by Return Range</span>
             </div>
 
-            <div className="h-72 w-full pt-2">
+            <div className="h-72 w-full pt-1">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={results.returnDistribution} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                  <XAxis dataKey="range" stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
-                  <YAxis stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                  <XAxis dataKey="range" stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
+                  <YAxis stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#07090f', borderColor: 'rgba(255,255,255,0.12)', fontSize: '12px', fontFamily: 'monospace', borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}
-                    formatter={(value: any) => [`${value} trades`, 'Count']}
+                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46', fontSize: '11px', fontFamily: 'monospace', borderRadius: '8px' }}
+                    formatter={(value: any) => [`${value} trades`, 'Frequency']}
                   />
                   <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                     {results.returnDistribution.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={entry.isPositive ? '#10b981' : '#f43f5e'}
-                        fillOpacity={0.85}
-                      />
+                      <Cell key={`cell-${index}`} fill={entry.isPositive ? '#10b981' : '#f43f5e'} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-[11px] text-slate-400 font-sans italic pt-1">
-              Chart 2: Distribution of trade returns following qualifying entry signals. Green bars indicate profitable bounces.
+            <p className="text-xs text-zinc-400">
+              Chart 2: Frequency distribution of trade returns following qualifying entry signals. Green bars show profitable trades.
             </p>
           </div>
         )}
 
         {/* CHART 3: Signal Performance */}
         {activeTab === 'signals' && (
-          <div className="space-y-3.5">
-            <div className="flex items-center justify-between text-xs font-mono">
-              <span className="text-slate-200 font-bold">
-                Individual Trade Returns (Chronological Sample)
-              </span>
-              <span className="text-slate-500 text-[11px] font-mono">Recent 80 Signals</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
+              <span className="text-white font-medium">Trade Outcome Sequence</span>
+              <span className="text-zinc-500 text-[11px]">Recent 80 Trades</span>
             </div>
 
-            <div className="h-72 w-full pt-2">
+            <div className="h-72 w-full pt-1">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={tradesData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                  <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 9, fontFamily: 'monospace' }} tickLine={false} />
-                  <YAxis stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                  <XAxis dataKey="name" stroke="#71717a" tick={{ fontSize: 9, fontFamily: 'monospace' }} tickLine={false} />
+                  <YAxis stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#07090f', borderColor: 'rgba(255,255,255,0.12)', fontSize: '12px', fontFamily: 'monospace', borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}
+                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46', fontSize: '11px', fontFamily: 'monospace', borderRadius: '8px' }}
                     formatter={(value: any, _, item: any) => [
                       `${value >= 0 ? '+' : ''}${value}%`,
                       `Date: ${item.payload.date}`,
                     ]}
                   />
-                  <ReferenceLine y={0} stroke="#475569" strokeWidth={1} />
+                  <ReferenceLine y={0} stroke="#4b5563" />
                   <Bar dataKey="returnPct" radius={[2, 2, 0, 0]}>
                     {tradesData.map((entry, index) => (
-                      <Cell
-                        key={`cell-sig-${index}`}
-                        fill={entry.isWin ? '#10b981' : '#f43f5e'}
-                      />
+                      <Cell key={`sig-${index}`} fill={entry.isWin ? '#10b981' : '#f43f5e'} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-[11px] text-slate-400 font-sans italic pt-1">
-              Chart 3: Return per qualifying trade. Illustrates volatility clustering during market stress.
+            <p className="text-xs text-zinc-400">
+              Chart 3: Individual trade return sequence showing return dispersion across market phases.
             </p>
           </div>
         )}
 
-        {/* CHART 4: Market Price & Entry Signals */}
+        {/* CHART 4: Market Price */}
         {activeTab === 'price' && (
-          <div className="space-y-3.5">
-            <div className="flex items-center justify-between text-xs font-mono">
-              <div className="space-x-4">
-                <span className="inline-flex items-center gap-2 text-cyan-400 font-bold">
-                  <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block shadow-[0_0_8px_rgba(6,182,212,0.8)]"></span>
-                  NIFTY 50 Simulated Price Trajectory
-                </span>
-              </div>
-              <span className="text-slate-500 text-[11px] font-mono">~1,250 Daily Sessions</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
+              <span className="text-white font-medium">Simulated NIFTY 50 Daily Price</span>
+              <span className="text-zinc-500 text-[11px]">~1,250 Sessions</span>
             </div>
 
-            <div className="h-72 w-full pt-2">
+            <div className="h-72 w-full pt-1">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={sampledEquity} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-                  <XAxis dataKey="date" stroke="#64748b" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
-                  <YAxis stroke="#64748b" domain={['auto', 'auto']} tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                  <XAxis dataKey="date" stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
+                  <YAxis stroke="#71717a" domain={['auto', 'auto']} tick={{ fontSize: 10, fontFamily: 'monospace' }} tickLine={false} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#07090f', borderColor: 'rgba(255,255,255,0.12)', fontSize: '12px', fontFamily: 'monospace', borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.6)' }}
-                    formatter={(value: any) => [`${Math.round(value)} pts`, 'NIFTY Level']}
+                    contentStyle={{ backgroundColor: '#18181b', borderColor: '#3f3f46', fontSize: '11px', fontFamily: 'monospace', borderRadius: '8px' }}
+                    formatter={(value: any) => [`${Math.round(value)} pts`, 'Index Price']}
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="benchmarkPrice"
-                    stroke="#06b6d4"
-                    strokeWidth={1.8}
-                    dot={false}
-                  />
+                  <Line type="monotone" dataKey="benchmarkPrice" stroke="#38bdf8" strokeWidth={1.8} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-[11px] text-slate-400 font-sans italic pt-1">
-              Chart 4: Underlying synthetic market price series exhibiting non-stationary trending and volatility clustering regimes.
+            <p className="text-xs text-zinc-400">
+              Chart 4: Synthetic NIFTY 50 benchmark price series used in the backtest demonstration.
             </p>
           </div>
         )}

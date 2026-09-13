@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Loader2, Cpu } from 'lucide-react';
+import { Check, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ExperimentProgressProps {
@@ -9,12 +9,11 @@ interface ExperimentProgressProps {
 }
 
 const PIPELINE_STEPS = [
-  'Parsing experiment specification & constraints',
-  'Generating seeded deterministic NIFTY market data',
-  'Filtering observations & isolating entry signals',
-  'Simulating trade lifecycles & event returns',
-  'Computing edge, drawdown & empirical distributions',
-  'Synthesizing data findings vs AI interpretations',
+  'Parsing experiment parameters',
+  'Generating seeded NIFTY daily data (5 years)',
+  'Testing entry signals and holding periods',
+  'Calculating statistics and excess return',
+  'Preparing findings and interpretation',
 ];
 
 export function ExperimentProgress({ onComplete }: ExperimentProgressProps) {
@@ -29,32 +28,27 @@ export function ExperimentProgress({ onComplete }: ExperimentProgressProps) {
           clearInterval(interval);
           setTimeout(() => {
             onComplete();
-          }, 350);
+          }, 300);
           return prev;
         }
       });
-    }, 280);
+    }, 250);
 
     return () => clearInterval(interval);
   }, [onComplete]);
 
   return (
-    <div className="w-full max-w-xl mx-auto my-12 bg-[#0c1120] border border-slate-800 rounded-xl p-6 sm:p-8 space-y-6 shadow-2xl">
-      <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
-        <div className="w-8 h-8 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-          <Cpu className="w-4 h-4 animate-pulse" />
-        </div>
-        <div>
-          <h3 className="text-base font-semibold text-slate-100 font-sans">
-            Executing Quantitative Pipeline
-          </h3>
-          <p className="text-xs text-slate-400 font-mono">
-            Deterministic simulation on ~1,250 trading bars
-          </p>
-        </div>
+    <div className="w-full max-w-md mx-auto my-12 bg-zinc-900 border border-zinc-800 rounded-xl p-6 space-y-4 shadow-sm">
+      <div className="border-b border-zinc-800 pb-3">
+        <h3 className="text-base font-bold text-white font-sans">
+          Running Backtest
+        </h3>
+        <p className="text-xs text-zinc-400 font-sans">
+          Evaluating ~1,250 historical trading sessions...
+        </p>
       </div>
 
-      <div className="space-y-3 font-mono text-xs">
+      <div className="space-y-2 text-xs font-mono">
         {PIPELINE_STEPS.map((step, idx) => {
           const isFinished = idx < currentStep;
           const isActive = idx === currentStep;
@@ -64,20 +58,20 @@ export function ExperimentProgress({ onComplete }: ExperimentProgressProps) {
             <div
               key={idx}
               className={cn(
-                'flex items-center gap-3 p-2.5 rounded-lg transition-all',
-                isActive && 'bg-emerald-950/30 border border-emerald-500/40 text-emerald-300',
-                isFinished && 'text-slate-400',
-                isPending && 'text-slate-600'
+                'flex items-center gap-3 p-2.5 rounded-lg transition-colors',
+                isActive && 'bg-zinc-800 text-emerald-400 font-medium border border-zinc-700',
+                isFinished && 'text-zinc-300',
+                isPending && 'text-zinc-600'
               )}
             >
               {isFinished ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <Check className="w-4 h-4 text-emerald-400 shrink-0 stroke-[2.5]" />
               ) : isActive ? (
                 <Loader2 className="w-4 h-4 text-emerald-400 animate-spin shrink-0" />
               ) : (
-                <div className="w-4 h-4 rounded-full border border-slate-800 shrink-0" />
+                <div className="w-4 h-4 rounded-full border border-zinc-700 shrink-0" />
               )}
-              <span className={cn('font-sans', isActive && 'font-medium text-slate-200')}>
+              <span className="font-sans text-xs">
                 {step}
               </span>
             </div>

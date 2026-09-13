@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { ClarificationChoices, ResearchQuestion } from '@/lib/types/research';
-import { ShieldCheck, Edit3 } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 interface AssumptionsPanelProps {
   parsedQuestion: ResearchQuestion;
@@ -30,19 +30,19 @@ export function AssumptionsPanel({
     },
     {
       label: 'Exit execution',
-      value: `Close of Day ${clarifications.holdingPeriodDays}`,
+      value: `Close of trading day ${clarifications.holdingPeriodDays}`,
       source: parsedQuestion.parameterSources.exitCondition,
     },
     {
-      label: 'Sample period',
-      value: `${clarifications.testPeriodYears} years (~${clarifications.testPeriodYears * 252} bars)`,
+      label: 'Test period',
+      value: `${clarifications.testPeriodYears} years`,
       source: 'assumed',
     },
     {
       label: 'Transaction costs',
       value:
         clarifications.costBps === 0
-          ? '0 bps (Excluded for prototype)'
+          ? 'Excluded for prototype (0 bps)'
           : `${clarifications.costBps} bps per trade`,
       source: 'assumed',
     },
@@ -53,57 +53,60 @@ export function AssumptionsPanel({
           ? 'Rolling 20-day volatility ≥ 75th percentile'
           : clarifications.volatilityRegime === 'low_volatility'
           ? 'Rolling 20-day volatility ≤ 25th percentile'
-          : 'All historical market regimes',
+          : 'None (All market periods)',
       source: parsedQuestion.parameterSources.volatilityFilter,
     },
   ];
 
   return (
-    <div className="card-terminal border-amber-500/30 rounded-xl p-5 space-y-3.5 font-mono text-xs shadow-xl">
-      <div className="flex items-center justify-between border-b border-white/[0.08] pb-3">
-        <div className="flex items-center gap-2 text-amber-300 font-bold uppercase tracking-wider text-xs">
-          <ShieldCheck className="w-4 h-4 text-amber-400" />
-          <span>Active Assumptions &amp; Provenance</span>
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-4 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+        <div>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-amber-400" />
+            <span className="font-bold text-white uppercase text-xs tracking-wider font-mono">
+              Assumptions
+            </span>
+          </div>
+          <span className="text-zinc-400 text-xs mt-0.5 block font-sans">
+            These were not explicitly specified in your question.
+          </span>
         </div>
         <button
           onClick={onEditAssumptions}
-          className="flex items-center gap-1.5 px-3 py-1 rounded-md bg-slate-800/80 hover:bg-slate-700 text-slate-200 hover:text-white border border-white/[0.1] transition-all text-[11px] font-medium"
+          className="px-3 py-1.5 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-200 hover:text-white border border-zinc-700 transition-colors text-xs font-medium cursor-pointer self-start sm:self-center"
         >
-          <Edit3 className="w-3 h-3 text-slate-400" />
-          <span>Change Assumptions</span>
+          Change assumptions
         </button>
       </div>
 
-      <p className="text-slate-400 text-xs font-sans leading-relaxed">
-        Responsible quantitative modeling requires making every latent parameter visible. The
-        following assumptions are applied to structure the experiment:
-      </p>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         {assumptionsList.map((item, idx) => (
           <div
             key={idx}
-            className="flex items-start justify-between p-3 rounded-lg card-terminal-subtle"
+            className="flex items-start justify-between p-3 rounded-lg bg-zinc-950/60 border border-zinc-800"
           >
             <div>
-              <span className="text-slate-400 text-[10px] uppercase font-mono tracking-wider block mb-0.5">
+              <span className="text-zinc-500 text-[10px] block font-mono uppercase tracking-wider">
                 {item.label}
               </span>
-              <span className="text-slate-100 font-semibold text-xs font-mono">{item.value}</span>
+              <span className="text-zinc-200 font-medium text-xs font-sans mt-0.5 block">
+                {item.value}
+              </span>
             </div>
             <span
-              className={`text-[9px] px-2 py-0.5 rounded font-mono uppercase tracking-wider font-semibold ${
+              className={`text-[9px] px-2 py-0.5 rounded font-mono uppercase font-bold tracking-wider ${
                 item.source === 'explicit'
-                  ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/40'
+                  ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800'
                   : item.source === 'inferred'
-                  ? 'bg-sky-950/80 text-sky-300 border border-sky-500/40'
-                  : 'bg-amber-950/80 text-amber-300 border border-amber-500/40'
+                  ? 'bg-sky-950/80 text-sky-400 border border-sky-800'
+                  : 'bg-amber-950/80 text-amber-300 border border-amber-800'
               }`}
             >
               {item.source === 'explicit'
                 ? 'User Specified'
                 : item.source === 'inferred'
-                ? 'AI Inferred'
+                ? 'Inferred'
                 : 'Assumed'}
             </span>
           </div>

@@ -11,12 +11,12 @@ interface WorkflowStepperProps {
   stagesCompleted: Record<ResearchStage, boolean>;
 }
 
-const STAGES: { id: ResearchStage; num: string; label: string; description: string }[] = [
-  { id: 'ask', num: '01', label: 'ASK', description: 'Plain English Inquiry' },
-  { id: 'clarify', num: '02', label: 'CLARIFY', description: 'Ambiguity & Decisions' },
-  { id: 'define', num: '03', label: 'DEFINE', description: 'Testable Specification' },
-  { id: 'test', num: '04', label: 'TEST', description: 'Deterministic Backtest' },
-  { id: 'learn', num: '05', label: 'LEARN', description: 'Data vs Interpretation' },
+const STAGES: { id: ResearchStage; num: string; label: string; desc: string }[] = [
+  { id: 'ask', num: '1', label: 'Ask', desc: 'Research Question' },
+  { id: 'clarify', num: '2', label: 'Clarify', desc: 'Resolve Ambiguity' },
+  { id: 'define', num: '3', label: 'Define', desc: 'Experiment Plan' },
+  { id: 'test', num: '4', label: 'Test', desc: 'Run Backtest' },
+  { id: 'learn', num: '5', label: 'Learn', desc: 'Results & Insights' },
 ];
 
 export function WorkflowStepper({
@@ -28,55 +28,49 @@ export function WorkflowStepper({
   const currentIndex = stageOrder.indexOf(currentStage);
 
   return (
-    <div className="w-full bg-[#080b13]/90 border-b border-white/[0.06] py-2.5 px-4 lg:px-6">
+    <div className="w-full bg-zinc-900 border-b border-zinc-800 py-3 px-4 sm:px-6">
       <div className="max-w-7xl mx-auto">
         <nav aria-label="Progress" className="overflow-x-auto no-scrollbar">
-          <ol className="flex items-center min-w-max gap-1 sm:gap-2 justify-between">
+          <ol className="flex items-center min-w-max gap-2 sm:gap-4 justify-between">
             {STAGES.map((stage, idx) => {
               const isCurrent = stage.id === currentStage;
               const isPast = idx < currentIndex || stagesCompleted[stage.id];
               const isClickable = isPast && onSelectStage;
 
               return (
-                <li key={stage.id} className="flex items-center gap-1 sm:gap-2">
+                <li key={stage.id} className="flex items-center gap-2 sm:gap-4">
                   <button
                     disabled={!isClickable}
                     onClick={() => isClickable && onSelectStage(stage.id)}
                     className={cn(
-                      'flex items-center gap-2.5 px-3 py-1.5 rounded-lg transition-all text-xs font-mono select-none',
-                      isCurrent &&
-                        'bg-emerald-500/10 border border-emerald-500/40 text-emerald-300 font-semibold shadow-[0_0_16px_rgba(16,185,129,0.15)]',
-                      isPast && !isCurrent && 'text-slate-300 hover:text-white hover:bg-white/[0.04] cursor-pointer',
-                      !isPast && !isCurrent && 'text-slate-500 cursor-not-allowed opacity-60'
+                      'flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs transition-colors select-none text-left',
+                      isCurrent && 'bg-zinc-800 text-white font-semibold border border-zinc-700 shadow-sm',
+                      isPast && !isCurrent && 'text-zinc-300 hover:text-white hover:bg-zinc-800/60 cursor-pointer',
+                      !isPast && !isCurrent && 'text-zinc-600 cursor-not-allowed'
                     )}
                   >
                     <span
                       className={cn(
-                        'w-5 h-5 rounded flex items-center justify-center text-[10px] font-bold border transition-colors',
-                        isCurrent && 'border-emerald-400 bg-emerald-500/20 text-emerald-300 shadow-sm',
-                        isPast && !isCurrent && 'border-emerald-700/60 bg-emerald-950/40 text-emerald-400',
-                        !isPast && !isCurrent && 'border-slate-800 bg-slate-900/50 text-slate-500'
+                        'w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold border transition-colors',
+                        isCurrent && 'border-emerald-500 bg-emerald-500/20 text-emerald-400',
+                        isPast && !isCurrent && 'border-zinc-700 bg-zinc-800 text-zinc-300',
+                        !isPast && !isCurrent && 'border-zinc-800 bg-zinc-900 text-zinc-600'
                       )}
                     >
-                      {isPast && !isCurrent ? <Check className="w-3 h-3 stroke-[2.5]" /> : stage.num}
+                      {isPast && !isCurrent ? <Check className="w-3 h-3 text-emerald-400 stroke-[3]" /> : stage.num}
                     </span>
-                    <div className="text-left">
-                      <div className="font-semibold tracking-wider text-[11px] leading-tight">
+                    <div>
+                      <div className={cn('text-xs', isCurrent ? 'text-white' : isPast ? 'text-zinc-300' : 'text-zinc-500')}>
                         {stage.label}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-sans hidden lg:block leading-tight">
-                        {stage.description}
+                      <div className="text-[10px] text-zinc-500 hidden md:block">
+                        {stage.desc}
                       </div>
                     </div>
                   </button>
 
                   {idx < STAGES.length - 1 && (
-                    <ChevronRight
-                      className={cn(
-                        'w-3.5 h-3.5 shrink-0 mx-0.5',
-                        idx < currentIndex ? 'text-emerald-500/60' : 'text-slate-800'
-                      )}
-                    />
+                    <ChevronRight className="w-4 h-4 text-zinc-700 mx-1 shrink-0" />
                   )}
                 </li>
               );

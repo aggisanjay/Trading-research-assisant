@@ -291,7 +291,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#07090e] text-slate-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
+    <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-100 font-sans selection:bg-emerald-500/20 selection:text-emerald-300">
       {/* Header */}
       <Header onReset={handleReset} hasActiveExperiment={stage !== 'ask'} />
 
@@ -320,7 +320,7 @@ export default function Home() {
 
             {/* Optional Recent Sessions in ASK stage */}
             {history.length > 0 && (
-              <div className="pt-4 border-t border-white/[0.06]">
+              <div className="pt-4 border-t border-zinc-800">
                 <RecentResearchDrawer
                   history={history}
                   onSelectHistory={(item) => handleSelectNextQuestion(item.question)}
@@ -404,10 +404,10 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-[#06080d] py-4 px-4 text-center text-xs text-slate-500 font-mono">
+      <footer className="border-t border-zinc-800 bg-zinc-950 py-4 px-4 text-center text-xs text-zinc-500 font-mono">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
           <span>AI-Native Trading Research Assistant // Academic &amp; Quant Prototype</span>
-          <span className="text-[11px] text-slate-600">
+          <span className="text-[11px] text-zinc-600">
             Deterministic Engine • Seeded PRNG • Strictly Non-Financial Advice
           </span>
         </div>

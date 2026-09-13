@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Clock, History, Trash2 } from 'lucide-react';
+import { History, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface HistoryItem {
@@ -26,46 +26,30 @@ export function RecentResearchDrawer({
   className,
 }: RecentResearchDrawerProps) {
   if (history.length === 0) {
-    return (
-      <div
-        className={cn(
-          'w-full lg:w-64 card-terminal rounded-xl p-4 font-mono text-xs text-slate-500 shadow-xl',
-          className
-        )}
-      >
-        <div className="flex items-center gap-2 text-slate-400 font-semibold mb-2 text-xs tracking-wider">
-          <History className="w-3.5 h-3.5 text-slate-400" />
-          <span>RECENT SESSIONS</span>
-        </div>
-        <p className="text-slate-500 text-xs italic font-sans leading-relaxed">
-          Completed research sessions will be saved here.
-        </p>
-      </div>
-    );
+    return null;
   }
 
   return (
     <div
       className={cn(
-        'w-full lg:w-64 card-terminal rounded-xl p-3.5 font-mono text-xs flex flex-col gap-3 shadow-2xl',
+        'bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-xs flex flex-col gap-2.5 shadow-sm',
         className
       )}
     >
-      <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
-        <div className="flex items-center gap-2 text-slate-300 font-bold tracking-wider text-[11px]">
-          <History className="w-3.5 h-3.5 text-cyan-400" />
-          <span>RECENT SESSIONS</span>
-        </div>
+      <div className="flex items-center justify-between border-b border-zinc-800 pb-2 font-mono">
+        <span className="text-[11px] font-bold text-zinc-300 uppercase tracking-wider">
+          Recent Research
+        </span>
         <button
           onClick={onClearHistory}
           title="Clear history"
-          className="text-slate-500 hover:text-rose-400 transition-colors p-1"
+          className="text-zinc-500 hover:text-zinc-300 transition-colors p-1 rounded hover:bg-zinc-800 cursor-pointer"
         >
           <Trash2 className="w-3.5 h-3.5" />
         </button>
       </div>
 
-      <div className="space-y-2 overflow-y-auto max-h-80 pr-0.5">
+      <div className="space-y-2 overflow-y-auto max-h-60">
         {history.map((item) => {
           const isPos = item.edge >= 0;
           return (
@@ -73,26 +57,15 @@ export function RecentResearchDrawer({
               key={item.id}
               type="button"
               onClick={() => onSelectHistory(item)}
-              className="w-full text-left p-3 rounded-lg card-terminal-interactive space-y-1.5 group cursor-pointer"
+              className="w-full text-left p-3 rounded-lg bg-zinc-950/70 hover:bg-zinc-800/80 border border-zinc-800 hover:border-zinc-700 transition-colors group cursor-pointer text-xs space-y-1.5"
             >
-              <div className="text-slate-200 text-xs font-sans font-medium line-clamp-2 group-hover:text-emerald-300 transition-colors leading-snug">
+              <div className="text-zinc-200 group-hover:text-white font-medium line-clamp-1 leading-snug font-sans">
                 &ldquo;{item.question}&rdquo;
               </div>
-              <div className="flex items-center justify-between text-[10px] text-slate-400 pt-0.5">
-                <span className="flex items-center gap-1">
-                  <Clock className="w-2.5 h-2.5 text-slate-400" />
-                  {item.timestamp}
-                </span>
-                <span
-                  className={cn(
-                    'font-mono font-bold px-1.5 py-0.5 rounded text-[10px]',
-                    isPos
-                      ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-500/30'
-                      : 'bg-rose-950/80 text-rose-400 border border-rose-500/30'
-                  )}
-                >
-                  {isPos ? '+' : ''}
-                  {item.edge.toFixed(2)}%
+              <div className="flex items-center justify-between text-[10px] text-zinc-500 pt-0.5 font-mono">
+                <span>{item.timestamp}</span>
+                <span className={cn('font-semibold', isPos ? 'text-emerald-400' : 'text-rose-400')}>
+                  {isPos ? '+' : ''}{item.edge.toFixed(2)}% edge
                 </span>
               </div>
             </button>
