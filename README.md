@@ -1,6 +1,6 @@
 # AI-Native Trading Research Assistant
 
-> Turn ambiguous natural-language market questions into structured, testable quantitative experiments with rigorous separation between data and AI interpretation.
+Turn ambiguous natural-language market questions into structured, testable quantitative experiments with rigorous separation between data and AI interpretation.
 
 ---
 
